@@ -862,75 +862,82 @@ quit_exclude(){
   enter
 }
 
-menu_udp(){
-	title "${a1:-SCRIPT DE CONFIGRACION UDPserver} BY @Rufu99"
-	print_center -ama 'UDPserver Binary by team newtoolsworks'
-	print_center -ama 'UDPclient Android SocksIP'
-	msg -bar
-  
-	if [[ $(type -p udpServer) ]]; then
-    port=$(cat /etc/systemd/system/UDPserver.service|grep 'exclude')
+menu_udp() {
+  clear
+  msg -bar
+  print_center -ama "${a1:-SCRIPT DE CONFIGRACION UDPserver} BY @Rufu99"
+  print_center -ama 'UDPserver Binary by team newtoolsworks'
+  msg -bar
+
+  if [[ $(type -p udpServer) ]]; then
+    # Display excluded ports
+    port=$(cat /etc/systemd/system/UDPserver.service | grep 'exclude')
     if [[ ! $port = "" ]]; then
-      port=$(echo $port|awk '{print $4}'|cut -d '=' -f2|sed 's/,/ /g')
+      port=$(echo $port | awk '{print $4}' | cut -d '=' -f2 | sed 's/,/ /g')
       print_center -ama "${a2:-PUERTOS EXCLUIDOS} $port"
       msg -bar
     fi
+
     ram=$(printf '%-8s' "$(free -m | awk 'NR==2{printf "%.2f%%", $3*100/$2 }')")
     cpu=$(printf '%-1s' "$(top -bn1 | awk '/Cpu/ { cpu = "" 100 - $8 "%" }; END { print cpu }')")
     echo " $(msg -verd 'IP:') $(msg -azu "$ip_publica")  $(msg -verd 'Ram:') $(msg -azu "$ram") $(msg -verd 'CPU:') $(msg -azu "$cpu")"
     msg -bar
 
-		if [[ $(systemctl is-active UDPserver) = 'active' ]]; then
-			estado="\e[1m\e[32m[ON]"
-		else
-			estado="\e[1m\e[31m[OFF]"
-		fi
-		echo " $(msg -verd "[1]") $(msg -verm2 '>') $(msg -verm2 "${a3:-DESINSTALAR UDPserver}")"
-		echo -e " $(msg -verd "[2]") $(msg -verm2 '>') $(msg -azu "${a4:-INICIAR/DETENER UDPserver}") $estado"
+    if [[ $(systemctl is-active UDPserver) = 'active' ]]; then
+      estado="\e[1m\e[32m[ON]"
+    else
+      estado="\e[1m\e[31m[OFF]"
+    fi
+    echo " $(msg -verd "[1]") $(msg -verm2 '>') $(msg -verm2 "${a3:-DESINSTALAR UDPserver}")"
+    echo -e " $(msg -verd "[2]") $(msg -verm2 '>') $(msg -azu "${a4:-INICIAR/DETENER UDPserver}") $estado"
     echo " $(msg -verd "[3]") $(msg -verm2 '>') $(msg -azu "${a5:-REOMOVER SCRIPT}")"
-		msg -bar3
+    msg -bar3
     echo " $(msg -verd "[4]") $(msg -verm2 '>') $(msg -azu "IDIOMA/LANGUAGE")"
     msg -bar3
-		echo " $(msg -verd "[5]") $(msg -verm2 '>') $(msg -verd "${a6:-CREAR CLIENTE}")"
-		echo " $(msg -verd "[6]") $(msg -verm2 '>') $(msg -verm2 "${a7:-REMOVER CLIENTE}")"
-		echo " $(msg -verd "[7]") $(msg -verm2 '>') $(msg -ama "${a8:-RENOVAR CLIENTE}")"
-		echo " $(msg -verd "[8]") $(msg -verm2 '>') $(msg -azu "${a9:-BLOQUEAR/DESBLOQUEAR CLIENTE}")"
-		echo " $(msg -verd "[9]") $(msg -verm2 '>') $(msg -blu "${a10:-DETELLES DE LOS CLIENTES}")"
-		echo " $(msg -verd "[10]") $(msg -verm2 '>') $(msg -azu "${a11:-LIMITADO DE CUENTAS}")"
-		msg -bar3
-    print_center -ama "${a12:-EXCLUCION DE PUERTO}"
+    echo " $(msg -verd "[5]") $(msg -verm2 '>') $(msg -verd "${a6:-CREAR CLIENTE}")"
+    echo " $(msg -verd "[6]") $(msg -verm2 '>') $(msg -verm2 "${a7:-REMOVER CLIENTE}")"
+    echo " $(msg -verd "[7]") $(msg -verm2 '>') $(msg -ama "${a8:-RENOVAR CLIENTE}")"
+    echo " $(msg -verd "[8]") $(msg -verm2 '>') $(msg -azu "${a9:-BLOQUEAR/DESBLOQUEAR CLIENTE}")"
+    echo " $(msg -verd "[9]") $(msg -verm2 '>') $(msg -blu "${a10:-DETELLES DE LOS CLIENTES}")"
+    echo " $(msg -verd "[10]") $(msg -verm2 '>') $(msg -azu "${a11:-CAMBIAR TIEMPO DE VIDA UDP}")"
+    echo " $(msg -verd "[11]") $(msg -verm2 '>') $(msg -ama "${a12:-REGISTRAR CLIENTES CON SOCKETS UDP}")"
+    echo " $(msg -verd "[12]") $(msg -verm2 '>') $(msg -ama "${a13:-DESREGISTRAR CLIENTES CON SOCKETS UDP}")"
+    echo " $(msg -verd "[13]") $(msg -verm2 '>') $(msg -azu "${a14:-MONITOREO DE CONEXIONES UDP}")"
     msg -bar3
-    echo " $(msg -verd "[11]") $(msg -verm2 '>') $(msg -verd "${a13:-AGREGAR PUERTO A LISTA DE EXCLUSION}")"
-		num=11
-    if [[ ! $port = "" ]]; then
-      echo " $(msg -verd "[12]") $(msg -verm2 '>') $(msg -verm2 "${a14:-QUITAR PUERTO A LISTA DE EXCLUSION}")"
-      num=12
-    fi
-    a=x; b=1
-	else
-		echo " $(msg -verd "[1]") $(msg -verm2 '>') $(msg -verd "${a15:-INSTALAR UDPserver}")"
-		num=1; a=1; b=x
-	fi
-	back
-	opcion=$(selection_fun $num)
+    echo " $(msg -verd "[14]") $(msg -verm2 '>') $(msg -blu "${a15:-CONEXIONES DROPBEAR ACTIVAS}")"
+    echo " $(msg -verd "[15]") $(msg -verm2 '>') $(msg -blu "${a16:-ELIMINAR CONEXIONES DROPBEAR}")"
+    msg -bar3
+    echo " $(msg -verd "[0]") $(msg -verm2 '>') $(msg -blu "${a17:-SALIR DEL SCRIPT}")"
+    msg -bar
+    echo -ne "$(msg -azu 'Elija una opcion:') " && read opcion
 
-	case $opcion in
-		$a)install_UDP;;
-		$b)uninstall_UDP;;
-		2)reset;;
-    3)QUIC_SCRIPT;;
-    4)idioam_lang; exit;;
-		5)new_user;;
-		6)remove_user;;
-		7)renew_user;;
-		8)block_user;;
-		9)detail_user;;
-		10)limiter;;
-    11)add_exclude;;
-    12)quit_exclude;;
-		0)return 1;;
-	esac
+    case $opcion in
+      1) desinst_udp ;;
+      2) start_udp ;;
+      3) rem_udp ;;
+      4) lang ;;
+      5) newcli ;;
+      6) remcli ;;
+      7) renovar ;;
+      8) bloqueo ;;
+      9) detalles ;;
+      10) temp ;;
+      11) reg ;;
+      12) unreg ;;
+      13) mon_udp ;;
+      14) droppids ;;
+      15) eliminar_droppids ;;
+      0) salir ;;
+      *) msg -bar2 && msg -verm2 "${a18:-Opcion invalida}" && msg -bar2 && sleep 2 ;;
+    esac
+
+  else
+    echo -e "${error} ${a19:-El archivo no existe!}"
+    sleep 3
+    exit
+  fi
 }
+
 
 while [[  $? -eq 0 ]]; do
   menu_udp
