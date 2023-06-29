@@ -899,9 +899,9 @@ menu_udp() {
     echo " $(msg -verd "[7]") $(msg -verm2 '>') $(msg -ama "${a8:-RENOVAR CLIENTE}")"
     echo " $(msg -verd "[8]") $(msg -verm2 '>') $(msg -azu "${a9:-BLOQUEAR/DESBLOQUEAR CLIENTE}")"
     echo " $(msg -verd "[9]") $(msg -verm2 '>') $(msg -blu "${a10:-DETELLES DE LOS CLIENTES}")"
-    echo " $(msg -verd "[10]") $(msg -verm2 '>') $(msg -azu "${a11:-CAMBIAR TIEMPO DE VIDA UDP}")"
+    echo " $(msg -verd "[10]") $(msg -verm2 '>') $(msg -ama "${a11:-CAMBIAR TIEMPO DE VIDA UDP}")"
     echo " $(msg -verd "[11]") $(msg -verm2 '>') $(msg -ama "${a12:-REGISTRAR CLIENTES CON SOCKETS UDP}")"
-    echo " $(msg -verd "[12]") $(msg -verm2 '>') $(msg -ama "${a13:-DESREGISTRAR CLIENTES CON SOCKETS UDP}")"
+    echo " $(msg -verd "[12]") $(msg -verm2 '>') $(msg -azu "${a13:-DESREGISTRAR CLIENTES CON SOCKETS UDP}")"
     echo " $(msg -verd "[13]") $(msg -verm2 '>') $(msg -azu "${a14:-MONITOREO DE CONEXIONES UDP}")"
     msg -bar3
     echo " $(msg -verd "[14]") $(msg -verm2 '>') $(msg -blu "${a15:-CONEXIONES DROPBEAR ACTIVAS}")"
@@ -925,7 +925,7 @@ menu_udp() {
       11) reg ;;
       12) unreg ;;
       13) mon_udp ;;
-      14) droppids ;;
+      14) droppids ;;  # Display connected users
       15) eliminar_droppids ;;
       0) salir ;;
       *) msg -bar2 && msg -verm2 "${a18:-Opcion invalida}" && msg -bar2 && sleep 2 ;;
@@ -937,8 +937,6 @@ menu_udp() {
     exit
   fi
 }
-
-
 while [[  $? -eq 0 ]]; do
   menu_udp
 done
